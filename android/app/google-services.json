@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "167049842953",
+    "project_id": "covidtracer-f13b1",
+    "storage_bucket": "covidtracer-f13b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167049842953:android:9975bcdf59f6de55cac3d8",
+        "android_client_info": {
+          "package_name": "stopcovidapp.covid_tracer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "167049842953-d0q0q0rnd1lvurctqtmbinf56q3t8pac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvo-tsLdB_iYRPVZ-nV5jJlRqMsy_QbUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "167049842953-d0q0q0rnd1lvurctqtmbinf56q3t8pac.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
