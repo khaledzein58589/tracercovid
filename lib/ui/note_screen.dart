@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:covid_tracer/model/note.dart';
 import 'package:covid_tracer/service/firebase_firestore_service.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 class NoteScreen extends StatefulWidget {
   final Note note;
   NoteScreen(this.note);
@@ -13,7 +13,7 @@ class NoteScreen extends StatefulWidget {
 class _NoteScreenState extends State<NoteScreen> {
   FirebaseFirestoreService db = new FirebaseFirestoreService();
 
-  TextEditingController _phonenumber;
+  final _phonenumber  = FirebaseAuth.instance.currentUser.phoneNumber;
   TextEditingController _result;
   TextEditingController _date;
   TextEditingController _status;
@@ -22,7 +22,7 @@ class _NoteScreenState extends State<NoteScreen> {
   void initState() {
     super.initState();
 
-    _phonenumber = new TextEditingController(text: widget.note.phonenumber);
+
     _result = new TextEditingController(text: widget.note.result);
     _date = new TextEditingController(text: widget.note.date);
     _status = new TextEditingController(text: widget.note.status);
@@ -37,10 +37,7 @@ class _NoteScreenState extends State<NoteScreen> {
         alignment: Alignment.center,
         child: Column(
           children: <Widget>[
-            TextField(
-              controller: _phonenumber,
-              decoration: InputDecoration(labelText: 'phonenumber'),
-            ),
+
             Padding(padding: new EdgeInsets.all(5.0)),
             TextField(
               controller: _result,
@@ -63,12 +60,12 @@ class _NoteScreenState extends State<NoteScreen> {
                 if (widget.note.id != null) {
                   db
                       .updateNote(
-                          Note(widget.note.id, _phonenumber.text, _result.text, _date.text, _status.text))
+                          Note(widget.note.id, _phonenumber, _result.text, _date.text, _status.text))
                       .then((_) {
                     Navigator.pop(context);
                   });
                 } else {
-                  db.createNote(_phonenumber.text, _result.text, _date.text, _status.text).then((_) {
+                  db.createNote(_phonenumber, _result.text, _date.text, _status.text).then((_) {
                     Navigator.pop(context);
                   });
                 }

@@ -3,7 +3,7 @@ import 'package:covid_tracer/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_format/date_time_format.dart';
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 void main() {

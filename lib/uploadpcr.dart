@@ -1,6 +1,6 @@
 import 'dart:io';
 
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,7 +19,7 @@ void main() {
 
 final Color green = Colors.blueAccent;
 final Color orange = Colors.blueAccent;
-final phoneController  = TextEditingController();
+final phoneController  = FirebaseAuth.instance.currentUser.phoneNumber;
 class UploadingImageToFirebaseStorage extends StatefulWidget {
 
   @override
@@ -52,7 +52,7 @@ class _UploadingImageToFirebaseStorageState
         .doc()
         .set({
       "date": DateTime.now(),
-      "phonenumber":  phoneController.text,
+      "phonenumber":  phoneController,
       "imagename": fileName,
 
     });
@@ -112,26 +112,7 @@ class _UploadingImageToFirebaseStorageState
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: phoneController,
-                    decoration: InputDecoration(
-                      labelText: "Enter Phone Number",
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    // The validator receives the text that the user has entered.
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please Enter Phone Number';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
+
                 SizedBox(height: 20.0),
                 Expanded(
                   child: Stack(

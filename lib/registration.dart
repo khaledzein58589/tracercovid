@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
@@ -74,7 +74,7 @@ class _RegisterPetState extends State<RegisterPet> {
   String dropdownValuecaza = 'Akkar';
 
   final nameController = TextEditingController();
-  final phoneController = TextEditingController();
+  final phoneController = FirebaseAuth.instance.currentUser.phoneNumber;
   final villageController = TextEditingController();
 
 
@@ -103,26 +103,7 @@ class _RegisterPetState extends State<RegisterPet> {
                   },
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.all(20.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: phoneController,
-                  decoration: InputDecoration(
-                    labelText: "Enter Phone Number",
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  // The validator receives the text that the user has entered.
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please Phone Number';
-                    }
-                    return null;
-                  },
-                ),
-              ),
+
 
               Padding(
                 padding: EdgeInsets.all(20.0),
@@ -216,14 +197,14 @@ class _RegisterPetState extends State<RegisterPet> {
                                 .doc()
                                 .set({
                               "fullname": nameController.text,
-                              "phonenumber": phoneController.text,
+                              "phonenumber": phoneController,
                               "province": dropdownValueprovince,
                               "caza": dropdownValuecaza,
                               "village": villageController.text,
                             }).then((_) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Successfully Added')));
-                              phoneController.clear();
+
                               nameController.clear();
                               villageController.clear();
                             }).catchError((onError) {
@@ -243,7 +224,7 @@ class _RegisterPetState extends State<RegisterPet> {
   @override
   void dispose() {
     super.dispose();
-    phoneController.dispose();
+
     nameController.dispose();
     villageController.dispose();
   }
