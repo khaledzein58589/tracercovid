@@ -15,7 +15,7 @@ class mainpage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Register',
+      title: 'khaled zein',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
