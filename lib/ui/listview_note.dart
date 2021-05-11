@@ -26,10 +26,11 @@ class _ListViewNoteState extends State<ListViewNote> {
     items = new List();
 
     noteSub?.cancel();
-    noteSub = db.getNoteList().listen((QuerySnapshot snapshot) {
+    noteSub = db.getNoteList().listen((QuerySnapshot snapshot) async {
       final List<Note> notes = snapshot.docs
           .map((documentSnapshot) => Note.fromMap(documentSnapshot.data()))
           .toList();
+
 
       setState(() {
         this.items = notes;
