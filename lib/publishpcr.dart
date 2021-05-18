@@ -1,3 +1,4 @@
+import 'package:covid_tracer/adminmainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:covid_tracer/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -49,7 +50,7 @@ class _MyHomePageState1 extends State<MyHomePage1> {
             //onPressed:() => Navigator.pop(context, false),
             onPressed: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => MyApp()
+                  builder: (context) => adminmainpage()
               ));
 
             },

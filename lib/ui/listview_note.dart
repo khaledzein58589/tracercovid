@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:covid_tracer/adminmainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:covid_tracer/service/firebase_firestore_service.dart';
@@ -60,7 +61,7 @@ class _ListViewNoteState extends State<ListViewNote> {
               //onPressed:() => Navigator.pop(context, false),
               onPressed: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => MyApp()
+                    builder: (context) => adminmainpage()
                 ));
 
               },

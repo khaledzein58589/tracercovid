@@ -1,25 +1,26 @@
+import 'package:covid_tracer/mainpage.dart';
+import 'package:covid_tracer/ui/listview_note.dart';
 import 'package:flutter/material.dart';
-import 'package:covid_tracer/registration.dart';
-import 'package:covid_tracer/uploadpcr.dart';
-import 'package:covid_tracer/geopoint.dart';
+import 'package:covid_tracer/publishpcr.dart';
+import 'package:covid_tracer/monitorpositive.dart';
 import 'package:covid_tracer/loginpage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(mainpage());
+  runApp(adminmainpage());
 }
 
-class mainpage extends StatelessWidget {
+class adminmainpage extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'khaled zein',
+      title: 'Administration',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage1(title: 'Registration '),
+      home: MyHomePage1(title: 'Administration '),
     );
   }
 }
@@ -38,13 +39,25 @@ class _MyHomePageState1 extends State<MyHomePage1> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+          automaticallyImplyLeading: true,
+          //`true` if you want Flutter to automatically add Back Button when needed,
+          //or `false` if you want to force your own back button every where
+          leading: IconButton(icon:Icon(Icons.arrow_back),
+            //onPressed:() => Navigator.pop(context, false),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => mainpage()
+              ));
+
+            },
+          )
       ),
       body: Center(
           child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("Main Page ",
+                  Text("Administrator Main Page ",
                       style: TextStyle(
                           fontWeight: FontWeight.w200,
                           fontSize: 30,
@@ -76,16 +89,19 @@ class _RegisterPetState extends State<RegisterPet> {
         child: SingleChildScrollView(
             child: Column(children: <Widget>[
 
+
+
+
+
               Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       ElevatedButton(
-
                         onPressed: () {
                           Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => loginpage()
+                              builder: (context) => publishpcr()
                           ));
 
                         },
@@ -96,34 +112,7 @@ class _RegisterPetState extends State<RegisterPet> {
                             borderRadius: BorderRadius.circular(32.0),
                           ),
                         ),
-                        child: Text('---Administration---'),
-                      ),
-
-                    ],
-                  )),
-
-
-              Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton(
-
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => registration()
-                          ));
-
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                          onPrimary: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32.0),
-                          ),
-                        ),
-                        child: Text('---registration---'),
+                        child: Text('Publish Pcr Test'),
                       ),
 
                     ],
@@ -136,7 +125,7 @@ class _RegisterPetState extends State<RegisterPet> {
                       ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => UploadingImageToFirebaseStorage()
+                              builder: (context) => ListViewNote()
                           ));
 
                         },
@@ -147,14 +136,11 @@ class _RegisterPetState extends State<RegisterPet> {
                             borderRadius: BorderRadius.circular(32.0),
                           ),
                         ),
-                        child: Text('Upload Pcr Test'),
+                        child: Text('Publish pcr result'),
                       ),
 
                     ],
                   )),
-
-
-
               Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Row(
@@ -163,7 +149,7 @@ class _RegisterPetState extends State<RegisterPet> {
                       ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => geopoint()
+                              builder: (context) => resultlist()
                           ));
 
                         },
@@ -174,11 +160,12 @@ class _RegisterPetState extends State<RegisterPet> {
                             borderRadius: BorderRadius.circular(32.0),
                           ),
                         ),
-                        child: Text('Geo Point Location'),
+                        child: Text('Monitor Positive Case'),
                       ),
 
                     ],
                   )),
+
             ])));
   }
 
