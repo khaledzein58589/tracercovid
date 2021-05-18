@@ -4,6 +4,7 @@ import 'package:covid_tracer/registration.dart';
 import 'package:covid_tracer/uploadpcr.dart';
 import 'package:covid_tracer/publishpcr.dart';
 import 'package:covid_tracer/monitorpositive.dart';
+import 'package:covid_tracer/geopoint.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -201,7 +202,30 @@ class _RegisterPetState extends State<RegisterPet> {
 
                     ],
                   )),
+              Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                              builder: (context) => geopoint()
+                          ));
 
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
+                          onPrimary: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(32.0),
+                          ),
+                        ),
+                        child: Text('Geo Point Location'),
+                      ),
+
+                    ],
+                  )),
             ])));
   }
 
