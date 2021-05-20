@@ -1,9 +1,9 @@
-import 'package:covid_tracer/mainpage.dart';
+import 'package:covid_tracer/main.dart';
 import 'package:covid_tracer/ui/listview_note.dart';
 import 'package:flutter/material.dart';
 import 'package:covid_tracer/publishpcr.dart';
 import 'package:covid_tracer/monitorpositive.dart';
-import 'package:covid_tracer/loginpage.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -46,7 +46,7 @@ class _MyHomePageState1 extends State<MyHomePage1> {
             //onPressed:() => Navigator.pop(context, false),
             onPressed: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => mainpage()
+                  builder: (context) => MyApp()
               ));
 
             },
