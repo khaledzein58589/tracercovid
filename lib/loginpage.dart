@@ -20,7 +20,8 @@ class _State extends State<loginpage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Sample App'),
+          title: Text('Admin Log In'),
+            backgroundColor: Colors.cyan,
             automaticallyImplyLeading: true,
             //`true` if you want Flutter to automatically add Back Button when needed,
             //or `false` if you want to force your own back button every where
@@ -42,19 +43,16 @@ class _State extends State<loginpage> {
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      'TutorialKart',
+                      'Log In',
                       style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.cyan,
                           fontWeight: FontWeight.w500,
                           fontSize: 30),
                     )),
-                Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Sign in',
-                      style: TextStyle(fontSize: 20),
-                    )),
+                Image.network(
+                  "https://static.thenounproject.com/png/16970-200.png",
+                  height: 200,
+                ),
                 Container(
                   padding: EdgeInsets.all(10),
                   child: TextField(
@@ -88,7 +86,7 @@ class _State extends State<loginpage> {
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: RaisedButton(
                       textColor: Colors.white,
-                      color: Colors.blue,
+                      color: Colors.cyan,
                       child: Text('Login'),
                       onPressed: () {
                     if(nameController.text=="khaled" && passwordController.text=="khaled") {

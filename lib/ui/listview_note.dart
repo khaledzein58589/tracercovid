@@ -49,11 +49,13 @@ class _ListViewNoteState extends State<ListViewNote> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Manage PCR',
+
       home: Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
             title: Text('Manage PCR'),
+            backgroundColor: Colors.cyan,
             automaticallyImplyLeading: true,
             //`true` if you want Flutter to automatically add Back Button when needed,
             //or `false` if you want to force your own back button every where
@@ -98,7 +100,7 @@ class _ListViewNoteState extends State<ListViewNote> {
                         children: <Widget>[
                           Padding(padding: EdgeInsets.all(2.0)),
                           CircleAvatar(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: Colors.cyan,
                             radius: 0.0,
                             child: Text(
                               '${position + 1}',

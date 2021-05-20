@@ -69,8 +69,9 @@ class _UploadingImageToFirebaseStorageState
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-          title: Text('Manage PCR'),
+          title: Text('Upload Pcr Report Signed'),
           automaticallyImplyLeading: true,
+          backgroundColor: Colors.cyan,
           //`true` if you want Flutter to automatically add Back Button when needed,
           //or `false` if you want to force your own back button every where
           leading: IconButton(icon:Icon(Icons.arrow_back),
@@ -86,13 +87,13 @@ class _UploadingImageToFirebaseStorageState
       body: Stack(
         children: <Widget>[
           Container(
-            height: 360,
+            height: 350,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(250.0),
                     bottomRight: Radius.circular(10.0)),
                 gradient: LinearGradient(
-                    colors: [green,orange],
+                    colors: [Colors.cyan, Colors.cyan],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight)),
           ),
@@ -103,14 +104,13 @@ class _UploadingImageToFirebaseStorageState
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child: Text(
-                      "Uploading Pcr Test Results",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontStyle: FontStyle.italic),
+                    child:  Image.network(
+                      "https://cdn2.iconfinder.com/data/icons/covid-19-60/256/Corona-test-sample-swab-512.png",
+                      height: 200,
                     ),
+
                   ),
+
                 ),
 
                 SizedBox(height: 20.0),
@@ -128,7 +128,7 @@ class _UploadingImageToFirebaseStorageState
                               : FlatButton(
                             child: Icon(
                               Icons.add_a_photo,
-                              color: Colors.blue,
+                              color: Colors.cyan,
                               size: 50,
                             ),
                             onPressed: pickImage,
@@ -158,7 +158,7 @@ class _UploadingImageToFirebaseStorageState
                 top: 30, left: 20.0, right: 20.0, bottom: 20.0),
             decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [orange, green],
+                  colors: [Colors.cyan, Colors.cyan],
                 ),
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(

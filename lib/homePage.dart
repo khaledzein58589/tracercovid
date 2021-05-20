@@ -6,7 +6,6 @@ import 'package:covid_tracer/uploadpcr.dart';
 import 'package:covid_tracer/geopoint.dart';
 import 'package:covid_tracer/loginpage.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -55,7 +54,7 @@ class _HomePageState extends State<MyHomePage> {
   }
   @override
   void initState() {
-    _locateMe();
+
     super.initState();
   }
 
@@ -74,7 +73,7 @@ class _HomePageState extends State<MyHomePage> {
       }
 
     }
-    Future.delayed(const Duration(milliseconds: 10000), () {
+    Future.delayed(const Duration(milliseconds: 20000), () {
 
 // Here you can write your code
 
@@ -99,13 +98,7 @@ class _HomePageState extends State<MyHomePage> {
 
     });
 
-    // Track user Movements
-    // location.onLocationChanged.listen((res) {
-    //   setState(() {
-    //     lat = res.latitude;
-    //     lng = res.longitude;
-    //   });
-    // });
+
   }
   @override
   Widget build(BuildContext context) {
@@ -113,7 +106,7 @@ class _HomePageState extends State<MyHomePage> {
     return Scaffold(
 
       appBar: AppBar(
-        title: Text("Phone Auth Demo"),
+        title: Text("Covid_19 Tracer"),
         backgroundColor: Colors.cyan,
       ),
       body: FutureBuilder(
@@ -128,7 +121,7 @@ class _HomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "SignIn Success 😊",
+                  "Welcome  😊",
                   style: TextStyle(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
@@ -136,7 +129,7 @@ class _HomePageState extends State<MyHomePage> {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 Padding(
                     padding: EdgeInsets.all(20.0),
@@ -152,7 +145,7 @@ class _HomePageState extends State<MyHomePage> {
 
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.red,
+                            primary: Colors.cyan,
                             onPrimary: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(32.0),
@@ -177,13 +170,13 @@ class _HomePageState extends State<MyHomePage> {
 
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.red,
+                            primary: Colors.cyan,
                             onPrimary: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(32.0),
                             ),
                           ),
-                          child: Text('---registration---'),
+                          child: Text('-----Registration-----'),
                         ),
 
                       ],
@@ -201,13 +194,13 @@ class _HomePageState extends State<MyHomePage> {
 
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.red,
+                            primary: Colors.cyan,
                             onPrimary: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(32.0),
                             ),
                           ),
-                          child: Text('Upload Pcr Test'),
+                          child: Text('---Upload Pcr Test---'),
                         ),
 
                       ],
@@ -215,30 +208,7 @@ class _HomePageState extends State<MyHomePage> {
 
 
 
-                Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                builder: (context) => geopoint()
-                            ));
 
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.red,
-                            onPrimary: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                            ),
-                          ),
-                          child: Text('Geo Point Location'),
-                        ),
-
-                      ],
-                    )),
                 Text(
                     "Registered Phone Number: ${firebaseUser.phoneNumber}"),
                 SizedBox(

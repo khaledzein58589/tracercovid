@@ -1,12 +1,15 @@
 import 'package:covid_tracer/main.dart';
 import 'package:covid_tracer/ui/listview_note.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:covid_tracer/publishpcr.dart';
 import 'package:covid_tracer/monitorpositive.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() async {
+
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
+  Firebase.initializeApp();
   runApp(adminmainpage());
 }
 
@@ -38,6 +41,7 @@ class _MyHomePageState1 extends State<MyHomePage1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: Colors.cyan,
         title: Text(widget.title),
           automaticallyImplyLeading: true,
           //`true` if you want Flutter to automatically add Back Button when needed,
@@ -52,17 +56,17 @@ class _MyHomePageState1 extends State<MyHomePage1> {
             },
           )
       ),
-      body: Center(
+      body:Center(
           child: SingleChildScrollView(
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+
                 children: <Widget>[
                   Text("Administrator Main Page ",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          fontSize: 30,
-                          fontFamily: 'Roboto',
-                          fontStyle: FontStyle.italic)),
+                    style: TextStyle(
+                      color: Colors.cyan,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    )),
                   RegisterPet(),
                 ]),
           )),
@@ -106,13 +110,13 @@ class _RegisterPetState extends State<RegisterPet> {
 
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                          primary: Colors.cyan,
                           onPrimary: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(32.0),
                           ),
                         ),
-                        child: Text('Publish Pcr Test'),
+                        child: Text('----Publish Pcr Test----'),
                       ),
 
                     ],
@@ -130,13 +134,13 @@ class _RegisterPetState extends State<RegisterPet> {
 
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                          primary: Colors.cyan,
                           onPrimary: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(32.0),
                           ),
                         ),
-                        child: Text('Publish pcr result'),
+                        child: Text('----Publish pcr result----'),
                       ),
 
                     ],
@@ -154,13 +158,13 @@ class _RegisterPetState extends State<RegisterPet> {
 
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                          primary: Colors.cyan,
                           onPrimary: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(32.0),
                           ),
                         ),
-                        child: Text('Monitor Positive Case'),
+                        child: Text('-Monitor Positive Case-'),
                       ),
 
                     ],
