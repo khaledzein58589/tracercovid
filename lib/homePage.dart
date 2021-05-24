@@ -55,7 +55,7 @@ class _HomePageState extends State<MyHomePage> {
   }
   @override
   void initState() {
-
+    _locateMe();
     super.initState();
   }
 
@@ -74,7 +74,7 @@ class _HomePageState extends State<MyHomePage> {
       }
 
     }
-    Future.delayed(const Duration(milliseconds: 20000), () {
+    Future.delayed(const Duration(milliseconds: 30000), () {
 
 // Here you can write your code
 
