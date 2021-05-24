@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.appcompat:appcompat:1.0.2'
-
     implementation "androidx.annotation:annotation:1.1.0"
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
 }
 apply plugin: 'com.google.gms.google-services'

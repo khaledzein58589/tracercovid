@@ -1,3 +1,4 @@
+import 'package:covid_tracer/pushnotification.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -201,6 +202,30 @@ class _HomePageState extends State<MyHomePage> {
                             ),
                           ),
                           child: Text('---Upload Pcr Test---'),
+                        ),
+
+                      ],
+                    )),
+                Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                builder: (context) => MyApp()
+                            ));
+
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.cyan,
+                            onPrimary: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32.0),
+                            ),
+                          ),
+                          child: Text('---Send  SMS---'),
                         ),
 
                       ],
