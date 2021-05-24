@@ -30,7 +30,7 @@ class UploadingImageToFirebaseStorage extends StatefulWidget {
 class _UploadingImageToFirebaseStorageState
     extends State<UploadingImageToFirebaseStorage> {
   File _imageFile;
-
+  String imageUrl;
   ///NOTE: Only supported on Android & iOS
   ///Needs image_picker plugin {https://pub.dev/packages/image_picker}
   final picker = ImagePicker();
@@ -45,8 +45,17 @@ class _UploadingImageToFirebaseStorageState
 
   Future uploadImageToFirebase(BuildContext context) async {
     String fileName = basename(_imageFile.path);
+    final _firebaseStorage = FirebaseStorage.instance;
+    PickedFile image;
     Reference firebaseStorageRef =
     FirebaseStorage.instance.ref().child('uploads/$fileName');
+    var snapshot = await _firebaseStorage.ref()
+        .child('uploads')
+        .putFile(_imageFile);
+    var downloadUrl = await snapshot.ref.getDownloadURL();
+    setState(() {
+      imageUrl = downloadUrl;
+    });
     FirebaseFirestore.instance
         .collection("pcrsend")
         .doc()
@@ -54,6 +63,7 @@ class _UploadingImageToFirebaseStorageState
       "date": DateTime.now(),
       "phonenumber":  phoneController,
       "imagename": fileName,
+      "imageUrl":imageUrl,
 
     });
     UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
