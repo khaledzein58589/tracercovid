@@ -1,10 +1,11 @@
+import 'package:covid_tracer/pcrlistview.dart';
 import 'package:covid_tracer/pushnotification.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:covid_tracer/registration.dart';
 import 'package:covid_tracer/uploadpcr.dart';
-import 'package:covid_tracer/geopoint.dart';
+import 'package:covid_tracer/pcrlistview.dart';
 import 'package:covid_tracer/loginpage.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
@@ -55,7 +56,7 @@ class _HomePageState extends State<MyHomePage> {
   }
   @override
   void initState() {
-    _locateMe();
+
     super.initState();
   }
 
@@ -214,7 +215,7 @@ class _HomePageState extends State<MyHomePage> {
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                builder: (context) => MyApp()
+                                builder: (context) => sendsms()
                             ));
 
                           },
@@ -230,12 +231,39 @@ class _HomePageState extends State<MyHomePage> {
 
                       ],
                     )),
+                Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                builder: (context) => pcrview()
+                            ));
 
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.cyan,
+                            onPrimary: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32.0),
+                            ),
+                          ),
+                          child: Text('---View Pcr---'),
+                        ),
+
+                      ],
+                    )),
 
 
 
                 Text(
                     "Registered Phone Number: ${firebaseUser.phoneNumber}"),
+
+
+
+
                 SizedBox(
                   height: 20,
                 ),

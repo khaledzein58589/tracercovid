@@ -2,14 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(sendsms());
 
-class MyApp extends StatefulWidget {
+class sendsms extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<sendsms> {
    TextEditingController _controllerPeople, _controllerMessage;
   String _message, body;
   String _canSendSMSMessage = 'Check is not run.';

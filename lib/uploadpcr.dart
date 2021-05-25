@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart';
 import 'package:covid_tracer/main.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,10 +48,14 @@ class _UploadingImageToFirebaseStorageState
     String fileName = basename(_imageFile.path);
     final _firebaseStorage = FirebaseStorage.instance;
     PickedFile image;
+    String uid = FirebaseAuth.instance.currentUser.uid;
+    DateTime now = DateTime.now();
+    String date = DateFormat('yyyy-MM-dd').format(now);
+    String time = DateFormat("HH:mm:ss").format(now);
     Reference firebaseStorageRef =
-    FirebaseStorage.instance.ref().child('uploads/$fileName');
+    FirebaseStorage.instance.ref().child('$fileName');
     var snapshot = await _firebaseStorage.ref()
-        .child('uploads')
+        .child('$fileName')
         .putFile(_imageFile);
     var downloadUrl = await snapshot.ref.getDownloadURL();
     setState(() {
@@ -58,14 +63,17 @@ class _UploadingImageToFirebaseStorageState
     });
     FirebaseFirestore.instance
         .collection("pcrsend")
-        .doc()
+        .doc(uid)
         .set({
-      "date": DateTime.now(),
+      "date": date,
+      "time": time,
       "phonenumber":  phoneController,
       "imagename": fileName,
       "imageUrl":imageUrl,
 
+
     });
+
     UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
     TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
     taskSnapshot.ref.getDownloadURL().then(
@@ -172,15 +180,29 @@ class _UploadingImageToFirebaseStorageState
                 ),
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(
-              onPressed: () => uploadImageToFirebase(context),
+
+              onPressed: () {
+                uploadImageToFirebase(context);
+                toast();
+              },
+
               child: Text(
-                "Upload Image",
+                "Upload Pcr",
                 style: TextStyle(fontSize: 20,color: Colors.white),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  toast() {
+    Fluttertoast.showToast(
+        msg: "Upload Success",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1
     );
   }
 }
