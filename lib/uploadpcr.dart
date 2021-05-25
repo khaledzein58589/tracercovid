@@ -16,14 +16,12 @@ void main() {
   runApp(UploadingImageToFirebaseStorage());
 }
 
-
-
 final Color green = Colors.blueAccent;
 final Color orange = Colors.blueAccent;
-final phoneController  = FirebaseAuth.instance.currentUser.phoneNumber;
-final uid  = FirebaseAuth.instance.currentUser.uid;
-class UploadingImageToFirebaseStorage extends StatefulWidget {
+final phoneController = FirebaseAuth.instance.currentUser?.phoneNumber;
+final uid = FirebaseAuth.instance.currentUser?.uid;
 
+class UploadingImageToFirebaseStorage extends StatefulWidget {
   @override
   _UploadingImageToFirebaseStorageState createState() =>
       _UploadingImageToFirebaseStorageState();
@@ -33,6 +31,8 @@ class _UploadingImageToFirebaseStorageState
     extends State<UploadingImageToFirebaseStorage> {
   File _imageFile;
   String imageUrl;
+  bool isLoading = false;
+
   ///NOTE: Only supported on Android & iOS
   ///Needs image_picker plugin {https://pub.dev/packages/image_picker}
   final picker = ImagePicker();
@@ -46,62 +46,66 @@ class _UploadingImageToFirebaseStorageState
   }
 
   Future uploadImageToFirebase(BuildContext context) async {
-    String fileName = basename(_imageFile.path);
-    final _firebaseStorage = FirebaseStorage.instance;
-    PickedFile image;
-    String uid = FirebaseAuth.instance.currentUser.uid;
-    DateTime now = DateTime.now();
+    if (_imageFile != null &&
+        _imageFile.path != null &&
+        _imageFile.path != '') {
+      setState(() {
+        isLoading = true;
+      });
 
-    Reference firebaseStorageRef =
-    FirebaseStorage.instance.ref().child('$fileName');
-    var snapshot = await _firebaseStorage.ref()
-        .child('$fileName')
-        .putFile(_imageFile);
-    var downloadUrl = await snapshot.ref.getDownloadURL();
-    setState(() {
-      imageUrl = downloadUrl;
-    });
-    FirebaseFirestore.instance
-        .collection("pcrsend")
-        .doc(uid)
-        .set({
-      "date": now,
-      "uid":uid,
-      "phonenumber":  phoneController,
-      "imagename": fileName,
-      "imageUrl":imageUrl,
+      String fileName = basename(_imageFile.path);
+      final _firebaseStorage = FirebaseStorage.instance;
+      PickedFile image;
+      String uid = FirebaseAuth.instance.currentUser?.uid;
+      DateTime now = DateTime.now();
 
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('$fileName');
+      var snapshot =
+          await _firebaseStorage.ref().child('$fileName').putFile(_imageFile);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        imageUrl = downloadUrl;
+      });
 
-    });
-
-    UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
-    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => print("Done: $value"),
-    );
+      UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+      final downloadedUrl = await taskSnapshot.ref.getDownloadURL();
+      print("Done: $downloadedUrl");
+      FirebaseFirestore.instance.collection("pcrsend").add({
+        "date": now,
+        "uid": uid ?? null,
+        "phonenumber": phoneController ?? null,
+        "imagename": fileName,
+        "imageUrl": downloadedUrl,
+      });
+      setState(() {
+        isLoading = false;
+        _imageFile = null;
+        toast();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
           title: Text('Upload Pcr Report Signed'),
           automaticallyImplyLeading: true,
           backgroundColor: Colors.cyan,
           //`true` if you want Flutter to automatically add Back Button when needed,
           //or `false` if you want to force your own back button every where
-          leading: IconButton(icon:Icon(Icons.arrow_back),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
             //onPressed:() => Navigator.pop(context, false),
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => MyApp()
-              ));
-
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyApp()));
             },
-          )
-      ),
+          )),
       body: Stack(
         children: <Widget>[
           Container(
@@ -122,15 +126,12 @@ class _UploadingImageToFirebaseStorageState
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child:  Image.network(
+                    child: Image.network(
                       "https://cdn2.iconfinder.com/data/icons/covid-19-60/256/Corona-test-sample-swab-512.png",
                       height: 200,
                     ),
-
                   ),
-
                 ),
-
                 SizedBox(height: 20.0),
                 Expanded(
                   child: Stack(
@@ -144,13 +145,13 @@ class _UploadingImageToFirebaseStorageState
                           child: _imageFile != null
                               ? Image.file(_imageFile)
                               : FlatButton(
-                            child: Icon(
-                              Icons.add_a_photo,
-                              color: Colors.cyan,
-                              size: 50,
-                            ),
-                            onPressed: pickImage,
-                          ),
+                                  child: Icon(
+                                    Icons.add_a_photo,
+                                    color: Colors.cyan,
+                                    size: 50,
+                                  ),
+                                  onPressed: pickImage,
+                                ),
                         ),
                       ),
                     ],
@@ -160,6 +161,7 @@ class _UploadingImageToFirebaseStorageState
               ],
             ),
           ),
+          isLoading ? Center(child: CircularProgressIndicator()) : Container(),
         ],
       ),
     );
@@ -171,24 +173,23 @@ class _UploadingImageToFirebaseStorageState
         children: <Widget>[
           Container(
             padding:
-            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
+                const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
             margin: const EdgeInsets.only(
                 top: 30, left: 20.0, right: 20.0, bottom: 20.0),
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.cyan, Colors.cyan],
-                ),
+                color: _imageFile != null &&
+                        _imageFile.path != null &&
+                        _imageFile.path != ''
+                    ? Colors.cyan
+                    : Colors.black12,
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(
-
               onPressed: () {
                 uploadImageToFirebase(context);
-                toast();
               },
-
               child: Text(
                 "Upload Pcr",
-                style: TextStyle(fontSize: 20,color: Colors.white),
+                style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
           ),
@@ -202,8 +203,7 @@ class _UploadingImageToFirebaseStorageState
         msg: "Upload Success",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        timeInSecForIos: 1
-    );
+        timeInSecForIos: 1);
   }
 }
 /*

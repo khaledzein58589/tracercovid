@@ -1,3 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:covid_tracer/service/global_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
@@ -7,11 +10,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:covid_tracer/main.dart';
+import 'package:path/path.dart' as Path;
+
+import 'model/pcr_model.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(pcrview());
-
 }
 
 class pcrview extends StatelessWidget {
@@ -32,176 +38,308 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   FirebaseStorage storage = FirebaseStorage.instance;
   TextEditingController _datefrom;
   TextEditingController _dateto;
   DateTime _selectedDate;
+  List<PcrModel> files = [];
+  bool isLoading = false;
+  DateTime fromDate;
+  DateTime toDate;
+  bool isShowFullImage = false;
+  String fullImageUrl;
 
-  Future<List<Map<String, dynamic>>> _loadImages() async {
-    List<Map<String, dynamic>> files = [];
-
-    final ListResult result = await storage.ref().list();
-    final List<Reference> allFiles = result.items;
-
-    await Future.forEach<Reference>(allFiles, (file) async {
-      final String fileUrl = await file.getDownloadURL();
-
-      files.add({
-        "imageUrl": fileUrl,
-
-
-      });
+  void _loadImages() async {
+    files = [];
+    setState(() {
+      isLoading = true;
     });
 
-    return files;
+    if (fromDate != null && toDate != null) {
+      QuerySnapshot data = await FirebaseFirestore.instance
+          .collection('pcrsend')
+          .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(fromDate))
+          .where('date', isLessThanOrEqualTo: Timestamp.fromDate(toDate))
+          .get();
+      data.docs.forEach((element) {
+        setState(() {
+          isLoading = false;
+          files.add(PcrModel(
+            id: element.id,
+            date: element.data()['date'],
+            imageName: element.data()['imagename'],
+            imageUrl: element.data()['imageUrl'],
+            phoneNumber: element.data()['phonenumber'],
+            uid: element.data()['uid'],
+          ));
+        });
+      });
+    } else {
+      QuerySnapshot data =
+          await FirebaseFirestore.instance.collection('pcrsend').get();
+      data.docs.forEach((element) {
+        setState(() {
+          isLoading = false;
+          files.add(PcrModel(
+            id: element.id,
+            date: element.data()['date'],
+            imageName: element.data()['imagename'],
+            imageUrl: element.data()['imageUrl'],
+            phoneNumber: element.data()['phonenumber'],
+            uid: element.data()['uid'],
+          ));
+        });
+      });
+    }
   }
+
   void initState() {
     super.initState();
     _datefrom = new TextEditingController();
     _dateto = new TextEditingController();
-
+    _loadImages();
   }
-  _selectDate(BuildContext context) async {
+
+  _selectDate(BuildContext context, {bool isFromDate = true}) async {
     DateTime newSelectedDate = await showDatePicker(
         context: context,
         initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
         firstDate: DateTime(2000),
-        lastDate: DateTime(2040),
+        lastDate: DateTime.now(),
         builder: (BuildContext context, Widget child) {
           return Theme(
-            data: ThemeData.dark().copyWith(
+            data: ThemeData.light().copyWith(
               colorScheme: ColorScheme.dark(
-                primary: Colors.deepPurple,
-                onPrimary: Colors.white,
-                surface: Colors.blueGrey,
-                onSurface: Colors.yellow,
+                primary: Colors.cyan.withOpacity(.5),
+                onPrimary: Colors.black,
+                surface: Colors.cyan,
+                onSurface: Colors.black,
               ),
-              dialogBackgroundColor: Colors.blue[500],
+              dialogBackgroundColor: Colors.white,
             ),
             child: child,
           );
         });
-
-    if (newSelectedDate != null) {
-      _selectedDate = newSelectedDate;
+    _selectedDate = newSelectedDate;
+    if (newSelectedDate != null && isFromDate) {
+      fromDate = _selectedDate;
       _datefrom
-        ..text =DateFormat('yyyy-MM-dd').format(_selectedDate)
+        ..text = DateFormat('yyyy-MM-dd').format(_selectedDate)
         ..selection = TextSelection.fromPosition(TextPosition(
-            offset: _datefrom.text.length,
-            affinity: TextAffinity.upstream));
-    }
-    if (newSelectedDate != null) {
-      _selectedDate = newSelectedDate;
+            offset: _datefrom.text.length, affinity: TextAffinity.upstream));
+    } else if (newSelectedDate != null) {
+      toDate = _selectedDate;
       _dateto
-        ..text =DateFormat('yyyy-MM-dd').format(_selectedDate)
+        ..text = DateFormat('yyyy-MM-dd').format(_selectedDate)
         ..selection = TextSelection.fromPosition(TextPosition(
-            offset: _dateto.text.length,
-            affinity: TextAffinity.upstream));
+            offset: _dateto.text.length, affinity: TextAffinity.upstream));
     }
   }
+
   // Delete the selected image
   // This function is called when a trash icon is pressed
-  Future<void> _delete(String ref) async {
-    await storage.ref(ref).delete();
-    // Rebuild the UI
-    setState(() {});
+  Future<void> _delete(String ref, PcrModel pcrModelId) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      var fileUrl = Uri.decodeFull(Path.basename(pcrModelId.imageUrl))
+          .replaceAll(new RegExp(r'(\?alt).*'), '');
+      final firebaseStorageRef = FirebaseStorage.instance.ref().child(fileUrl);
+      await firebaseStorageRef.delete();
+
+      /// delete pcr from firstore collection
+      await FirebaseFirestore.instance
+          .collection('pcrsend')
+          .doc(pcrModelId.id)
+          .delete();
+
+      files.remove(pcrModelId);
+
+      // Rebuild the UI
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      print('eeee $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Check Pcr report'),
+          title: Text('Check Pcr report'),
           automaticallyImplyLeading: true,
           //`true` if you want Flutter to automatically add Back Button when needed,
           //or `false` if you want to force your own back button every where
-          leading: IconButton(icon:Icon(Icons.arrow_back),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
             //onPressed:() => Navigator.pop(context, false),
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => MyApp()
-              ));
-
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyApp()));
             },
-          )
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Padding(padding: new EdgeInsets.all(5.0)),
-            TextField(
-              controller: _datefrom,
-              decoration: InputDecoration(labelText: 'From Date'),
-              onTap: () {
-                _selectDate(context);
-              },
-            ),
-            TextField(
-              controller: _dateto,
-              decoration: InputDecoration(labelText: 'To Date'),
-              onTap: () {
-                _selectDate(context);
-              },
-            ),
-            Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-
-                      },
-                      child: Text('Search'),
-                    ),
-
-                  ],
-                )),
-            Expanded(
-              child: FutureBuilder(
-                future: _loadImages(),
-                builder: (context,
-                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        final image = snapshot.data[index];
-                        return Card(
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          child: ListTile(
-                            leading: Container(
-                              width: 50,
-                                height: 50,
-                                child: Image.network(image['imageUrl'],
-                                    )
-                            ),
-                            title: Text("Phone"),
-                            subtitle: Text("Date"),
-                            trailing: IconButton(
-                              onPressed: () => _delete(image['path']),
-                              icon: Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                            ),
+          )),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Padding(padding: new EdgeInsets.all(5.0)),
+                TextField(
+                  controller: _datefrom,
+                  decoration: InputDecoration(labelText: 'From Date'),
+                  onTap: () {
+                    _selectDate(context, isFromDate: true);
+                  },
+                ),
+                TextField(
+                  controller: _dateto,
+                  decoration: InputDecoration(labelText: 'To Date'),
+                  onTap: () {
+                    _selectDate(context, isFromDate: false);
+                  },
+                ),
+                Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        ElevatedButton(
+                          onPressed: () => _loadImages(),
+                          child: Text(
+                            'Search',
+                            style: TextStyle(color: Colors.white),
                           ),
-                        );
-                      },
-                    );
-                  }
+                        ),
+                      ],
+                    )),
+                !isLoading ? showPcrLists() : CircularProgressIndicator(),
+              ],
+            ),
+          ),
 
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
+          AnimatedPositioned(
+            duration: Duration(milliseconds: 600),
+            curve: Curves.bounceInOut,
+            left: isShowFullImage ? 0 : -width,
+            child: Container(
+              color: Colors.black,
+              height: height,
+              width: width,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isShowFullImage = false;
+                            });
+                          }),
+                    ],
+                  ),
+                  CachedNetworkImage(
+                    imageUrl: fullImageUrl,
+                    width: width,
+                    height: height/1.5,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => CircularProgressIndicator(
+                      strokeWidth: 1,
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  )
+                ],
               ),
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
+  }
+
+  Widget showPcrLists() {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: files.length,
+        itemBuilder: (context, index) {
+          final pcrModel = files[index];
+          return Card(
+            shadowColor: Colors.cyan,
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: ListTile(
+              leading: Container(
+                child: CachedNetworkImage(
+                  imageUrl: pcrModel.imageUrl,
+                  width: width / 6,
+                  height: width / 6,
+                  imageBuilder: (context, imageProvider) => GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        fullImageUrl = pcrModel.imageUrl;
+                        isShowFullImage = true;
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => CircularProgressIndicator(
+                    strokeWidth: 1,
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+              ),
+              title: Text(
+                pcrModel.phoneNumber ?? 'No phone available',
+                style: TextStyle(
+                    fontSize: width / 25, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                getDateTime(pcrModel.date) ?? 'No date available',
+                style: TextStyle(fontSize: width / 30),
+              ),
+              trailing: IconButton(
+                onPressed: () => _delete(pcrModel.imageUrl, pcrModel),
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  String getDateTime(Timestamp date) {
+    DateTime dateTime = date?.toDate();
+
+    return dateTime != null
+        ? '${dateTime.day}-${dateTime.month}-${dateTime.year} ${dateTime.hour}-${dateTime.minute}'
+        : null;
   }
 }
