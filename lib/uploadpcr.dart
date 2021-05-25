@@ -21,6 +21,7 @@ void main() {
 final Color green = Colors.blueAccent;
 final Color orange = Colors.blueAccent;
 final phoneController  = FirebaseAuth.instance.currentUser.phoneNumber;
+final uid  = FirebaseAuth.instance.currentUser.uid;
 class UploadingImageToFirebaseStorage extends StatefulWidget {
 
   @override
@@ -50,8 +51,7 @@ class _UploadingImageToFirebaseStorageState
     PickedFile image;
     String uid = FirebaseAuth.instance.currentUser.uid;
     DateTime now = DateTime.now();
-    String date = DateFormat('yyyy-MM-dd').format(now);
-    String time = DateFormat("HH:mm:ss").format(now);
+
     Reference firebaseStorageRef =
     FirebaseStorage.instance.ref().child('$fileName');
     var snapshot = await _firebaseStorage.ref()
@@ -65,8 +65,8 @@ class _UploadingImageToFirebaseStorageState
         .collection("pcrsend")
         .doc(uid)
         .set({
-      "date": date,
-      "time": time,
+      "date": now,
+      "uid":uid,
       "phonenumber":  phoneController,
       "imagename": fileName,
       "imageUrl":imageUrl,
