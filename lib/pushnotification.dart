@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:covid_tracer/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 
@@ -85,6 +86,19 @@ class _MyAppState extends State<sendsms> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('SMS/MMS Example'),
+            automaticallyImplyLeading: true,
+            backgroundColor: Colors.cyan,
+            //`true` if you want Flutter to automatically add Back Button when needed,
+            //or `false` if you want to force your own back button every where
+            leading: IconButton(icon:Icon(Icons.arrow_back),
+              //onPressed:() => Navigator.pop(context, false),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => MyApp()
+                ));
+
+              },
+            )
         ),
         body: ListView(
           children: <Widget>[

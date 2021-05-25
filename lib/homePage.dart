@@ -25,7 +25,7 @@ class hpage extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Main Page',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.cyan,
       ),
       home: MyHomePage(title: 'Main Page '),
     );
@@ -226,7 +226,7 @@ class _HomePageState extends State<MyHomePage> {
                               borderRadius: BorderRadius.circular(32.0),
                             ),
                           ),
-                          child: Text('---Send  SMS---'),
+                          child: Text('-------Send  SMS-------'),
                         ),
 
                       ],
@@ -250,7 +250,7 @@ class _HomePageState extends State<MyHomePage> {
                               borderRadius: BorderRadius.circular(32.0),
                             ),
                           ),
-                          child: Text('---View Pcr---'),
+                          child: Text('--------View Pcr--------'),
                         ),
 
                       ],
