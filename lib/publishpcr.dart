@@ -1,6 +1,6 @@
 import 'package:covid_tracer/adminmainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:covid_tracer/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -83,6 +83,7 @@ class RegisterPet extends StatefulWidget {
 
 class _RegisterPetState extends State<RegisterPet> {
   final _formKey = GlobalKey<FormState>();
+  String uid = FirebaseAuth.instance.currentUser.uid;
   final pcrresult = ["Negative", "Positive"];
   String dropdownValuepcrresult = 'Negative';
 
@@ -196,6 +197,7 @@ class _RegisterPetState extends State<RegisterPet> {
                               "result": dropdownValuepcrresult,
                               "date": DateTime.now(),
                               "status": dropdownValuestatuspcr,
+                              "uid":uid,
                             }).then((_) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Successfully Added')));

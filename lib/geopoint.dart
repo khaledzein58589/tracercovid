@@ -91,7 +91,8 @@ class _HomePageState extends State<HomePage> {
     String date = DateFormat('yyyy-MM-dd').format(now);
     String time = DateFormat("HH:mm:ss").format(now);
     String phone = FirebaseAuth.instance.currentUser.phoneNumber;
-    FirebaseFirestore.instance.collection("location").doc().set({"phonenumber":'$phone',"date":'$date',"time":'$time',"latitude": '$lat', "longitude": '$lng',});
+    String uid = FirebaseAuth.instance.currentUser.uid;
+    FirebaseFirestore.instance.collection("location").doc().set({"phonenumber":'$phone',"date":'$date',"time":'$time',"latitude": '$lat', "longitude": '$lng',"uid":uid});
 
   }
 }

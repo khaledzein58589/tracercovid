@@ -1,4 +1,4 @@
-
+import 'package:covid_tracer/algorithm.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -159,7 +159,14 @@ class _HomePageState extends State<MyHomePage> {
                                         geopoint()));
                           },
                           label: 'geo point location'),
-
+                      GetOptionWidget(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        algorithm()));
+                          },
+                          label: 'Algorithm'),
                     ],
                   ),
                 )

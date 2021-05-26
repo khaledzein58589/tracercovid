@@ -1,4 +1,3 @@
-import 'package:covid_tracer/main.dart';
 import 'package:covid_tracer/ui/listview_note.dart';
 import 'package:covid_tracer/widgets/get_option_widget.dart';
 import 'package:flutter/cupertino.dart';

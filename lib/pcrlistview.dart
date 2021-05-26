@@ -1,17 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:covid_tracer/adminmainpage.dart';
 import 'package:covid_tracer/service/global_service.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart' as path;
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:covid_tracer/main.dart';
 import 'package:path/path.dart' as Path;
-
 import 'model/pcr_model.dart';
 
 Future<void> main() async {
@@ -180,7 +176,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             //onPressed:() => Navigator.pop(context, false),
             onPressed: () {
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => MyApp()));
+                  MaterialPageRoute(builder: (context) => adminmainpage()));
             },
           )),
       body: Stack(
