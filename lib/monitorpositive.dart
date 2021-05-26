@@ -1,3 +1,4 @@
+import 'package:covid_tracer/adminmainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,6 +34,17 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Monitor Positive Cases'),
         centerTitle: true,
+        automaticallyImplyLeading: true,
+        //`true` if you want Flutter to automatically add Back Button when needed,
+        //or `false` if you want to force your own back button every where
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          //onPressed:() => Navigator.pop(context, false),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => adminmainpage()));
+          },
+        ),
       ),
       body: PaginateFirestore(
         //item builder type is compulsory.

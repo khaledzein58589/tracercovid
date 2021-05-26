@@ -1,11 +1,10 @@
-import 'package:covid_tracer/pcrlistview.dart';
-import 'package:covid_tracer/pushnotification.dart';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:covid_tracer/registration.dart';
 import 'package:covid_tracer/uploadpcr.dart';
-import 'package:covid_tracer/pcrlistview.dart';
+import 'package:covid_tracer/geopoint.dart';
 import 'package:covid_tracer/loginpage.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
@@ -59,6 +58,7 @@ class _HomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
   }
 
   _locateMe() async {
@@ -150,20 +150,16 @@ class _HomePageState extends State<MyHomePage> {
                                         UploadingImageToFirebaseStorage()));
                           },
                           label: 'Upload Pcr Test'),
+
                       GetOptionWidget(
                           onPressed: () {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                    builder: (context) => sendsms()));
+                                    builder: (context) =>
+                                        geopoint()));
                           },
-                          label: 'Send  SMS'),
-                      GetOptionWidget(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => pcrview()));
-                          },
-                          label: 'View Pcr'),
+                          label: 'geo point location'),
+
                     ],
                   ),
                 )

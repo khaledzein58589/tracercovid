@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:covid_tracer/publishpcr.dart';
 import 'package:covid_tracer/monitorpositive.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'package:covid_tracer/pcrlistview.dart';
+import 'package:covid_tracer/pushnotification.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
@@ -51,7 +52,7 @@ class _MyHomePageState1 extends State<MyHomePage1> {
             //onPressed:() => Navigator.pop(context, false),
             onPressed: () {
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => MyApp()));
+                  MaterialPageRoute(builder: (context) => adminmainpage()));
             },
           )),
       body: Center(
@@ -81,6 +82,20 @@ class _MyHomePageState1 extends State<MyHomePage1> {
                     builder: (context) => resultlist()));
               },
               label: 'Monitor Positive Case'),
+              GetOptionWidget(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => sendsms()));
+                  },
+                  label: 'Send  SMS'),
+              GetOptionWidget(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => pcrview()));
+                  },
+                  label: 'View Pcr'),
         ],
       )),
     );

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -12,18 +12,15 @@ Future<void> main() async {
 }
 
 class geopoint extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'codesundar',
+      title: 'Flutter Demo',
       theme: ThemeData(
-          appBarTheme:
-          AppBarTheme(centerTitle: true, color: Colors.black, elevation: 0),
-          scaffoldBackgroundColor: Colors.grey[200]),
-      home: SafeArea(child: HomePage()),
-
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: HomePage(),
     );
   }
 }
@@ -34,91 +31,67 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Position _currentPosition;
   double lat;
   double lng;
-  Location location = new Location();
-  bool _serviceEnabled;
-  PermissionStatus _permissionGranted;
-
-  @override
-  void initState() {
-    _locateMe();
-    super.initState();
-  }
-
-
-  _locateMe() async {
-    DateTime now = DateTime.now();
-    String date = DateFormat('yyyy-MM-dd').format(now);
-    String time = DateFormat("HH:mm:ss").format(now);
-    String phone = FirebaseAuth.instance.currentUser.phoneNumber;
-    FirebaseFirestore.instance.collection("location").doc().set({"phonenumber":'$phone',"date":'$date',"time":'$time',"latitude": '$lat', "longitude": '$lng',});
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-
-      if (!_serviceEnabled) {
-        return;
-      }
-
-    }
-    Future.delayed(const Duration(milliseconds: 10000), () {
-
-// Here you can write your code
-
-      setState(() {
-        _locateMe();
-      });
-
-    });
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-
-        return;
-      }
-    }
-    await location.getLocation().then((res) {
-
-      lat = res.latitude;
-      lng = res.longitude;
-
-
-    });
-
-    // Track user Movements
-    // location.onLocationChanged.listen((res) {
-    //   setState(() {
-    //     lat = res.latitude;
-    //     lng = res.longitude;
-    //   });
-    // });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Geolocation"),
+        title: Text("Location"),
       ),
-      body: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(8.0),
+      body: Center(
         child: Column(
-          children: [
-            Expanded(
-              child: Center(
-                child: Text("Lat: $lat, Lng: $lng"),
-              ),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            if (_currentPosition != null) Text(
+                " $lat,$lng"
             ),
-
-
 
           ],
         ),
       ),
     );
   }
-}
 
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+  _getCurrentLocation() {
+    Geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best,
+        forceAndroidLocationManager: true)
+        .then((Position position) {
+      Future.delayed(const Duration(milliseconds: 10000), () {
+      setState(() {
+
+        _getCurrentLocation();
+        _currentPosition = position;
+        lat = _currentPosition.latitude;
+        lng = _currentPosition.longitude;
+
+      });
+      });
+
+      Future.delayed(const Duration(milliseconds: 15000), () {
+        setState(() {
+         savedata();
+        });
+      });
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  savedata() async {
+    DateTime now = DateTime.now();
+    String date = DateFormat('yyyy-MM-dd').format(now);
+    String time = DateFormat("HH:mm:ss").format(now);
+    String phone = FirebaseAuth.instance.currentUser.phoneNumber;
+    FirebaseFirestore.instance.collection("location").doc().set({"phonenumber":'$phone',"date":'$date',"time":'$time',"latitude": '$lat', "longitude": '$lng',});
+
+  }
+}

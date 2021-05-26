@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:covid_tracer/main.dart';
+import 'package:covid_tracer/adminmainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 
@@ -85,7 +85,7 @@ class _MyAppState extends State<sendsms> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('SMS/MMS Example'),
+          title: const Text('SMS/MMS '),
             automaticallyImplyLeading: true,
             backgroundColor: Colors.cyan,
             //`true` if you want Flutter to automatically add Back Button when needed,
@@ -94,7 +94,7 @@ class _MyAppState extends State<sendsms> {
               //onPressed:() => Navigator.pop(context, false),
               onPressed: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => MyApp()
+                    builder: (context) => adminmainpage()
                 ));
 
               },
