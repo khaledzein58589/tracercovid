@@ -84,7 +84,7 @@ class _HomePageState extends State<MyHomePage> {
       }
       Future.delayed(const Duration(milliseconds: 15000), () {
         setState(() {
-          savedata();
+
 
         });
       });

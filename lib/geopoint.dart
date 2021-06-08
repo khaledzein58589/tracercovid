@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   double lng;
   double earthRadius = 3960;
 //Using pLat and pLng as dummy location
-  double pLat = 33.863259;
+  double pLat = 33.863249;
   double pLng = 35.4911421;
 
 
@@ -115,6 +115,8 @@ class _HomePageState extends State<HomePage> {
     FirebaseFirestore.instance.collection("location").doc().set({"phonenumber":'$phone',"date":'$now',"latitude": '$lat', "longitude": '$lng',"uid":uid});
 
   }
+
+
   getDistance(){
     var a = cos(radians(pLat)) * cos(radians(lat)) *cos(radians(pLng)) * cos(radians(lng));
     var b = cos(radians(pLat)) * sin(radians(pLng)) *cos(radians(lat)) * sin(radians(lng));

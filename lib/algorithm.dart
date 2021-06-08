@@ -97,7 +97,7 @@ class _State extends State<algorithm> {
     print(s); //d is the distance in meters
 
     setState(() {
-      if (s<2) {
+      if (s<1) {
         phonenumber=phone;
       }
     });
