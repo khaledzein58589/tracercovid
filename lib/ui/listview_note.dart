@@ -90,10 +90,10 @@ class _ListViewNoteState extends State<ListViewNote> {
                       ),
                       subtitle: Text(
                         '${items[position].result}',
-                style: TextStyle(
-                fontSize: 22.0,
-                color: Colors.deepOrangeAccent,
-                ),
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.deepOrangeAccent,
+                        ),
 
                       ),
                       leading: Column(
@@ -146,9 +146,6 @@ class _ListViewNoteState extends State<ListViewNote> {
   }
 
   void _createNewNote(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => NoteScreen(Note(null, '', '','',''))),
-    );
+
   }
 }

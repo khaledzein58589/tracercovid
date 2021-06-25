@@ -85,7 +85,7 @@ class _NoteScreenState extends State<NoteScreen> {
             TextField(
               controller: _date,
               decoration: InputDecoration(labelText: 'date'),
-              
+
               onTap: () {
                 _selectDate(context);
               },
@@ -122,7 +122,7 @@ class _NoteScreenState extends State<NoteScreen> {
                 if (widget.note.id != null) {
                   db
                       .updateNote(
-                          Note(widget.note.id, _phonenumber.text, _result.text, _date.text, dropdownValuestatus))
+                      Note(widget.note.id, _phonenumber.text, _result.text, _date.text, dropdownValuestatus))
                       .then((_) {
                     Navigator.pop(context);
                   });
@@ -139,6 +139,3 @@ class _NoteScreenState extends State<NoteScreen> {
     );
   }
 }
-
-
-

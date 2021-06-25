@@ -11,7 +11,7 @@ import 'dart:math' show acos, atan2, cos, sin, sqrt;
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:covid_tracer/widgets/get_option_widget.dart';
-
+import 'dart:async';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
@@ -46,6 +46,7 @@ class _HomePageState extends State<MyHomePage> {
   String phone = FirebaseAuth.instance.currentUser.phoneNumber;
   double lat;
   double lng;
+  Timer timer;
 
   Future<void> _logout() async {
     try {
@@ -59,6 +60,7 @@ class _HomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _getCurrentLocation();
+
   }
   _getCurrentLocation() {
     Geolocator
@@ -84,7 +86,6 @@ class _HomePageState extends State<MyHomePage> {
       }
       Future.delayed(const Duration(milliseconds: 15000), () {
         setState(() {
-
 
         });
       });

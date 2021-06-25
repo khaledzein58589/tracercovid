@@ -7,6 +7,9 @@ import 'package:covid_tracer/monitorpositive.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:covid_tracer/pcrlistview.dart';
 import 'package:covid_tracer/pushnotification.dart';
+
+import 'homePage.dart';
+import 'mainpage.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
@@ -51,7 +54,7 @@ class _MyHomePageState1 extends State<MyHomePage1> {
             //onPressed:() => Navigator.pop(context, false),
             onPressed: () {
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => adminmainpage()));
+                  MaterialPageRoute(builder: (context) => hpage()));
             },
           )),
       body: Center(
