@@ -21,7 +21,6 @@ class resultlist extends StatelessWidget {
       title: 'Monitor Positive Cases',
       theme: ThemeData(
         appBarTheme: AppBarTheme(color: Colors.red),
-        primarySwatch: Colors.yellow,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         brightness: Brightness.dark,
       ),

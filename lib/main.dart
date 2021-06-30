@@ -36,10 +36,7 @@ class MyApp extends StatelessWidget {
                 } else if (userSnapshot.hasError) {
                   return CircularProgressIndicator();
                 }
-                return resultlist();
-                return publishpcr();
-                // return geopoint();
-                // return LoginPage();
+                return LoginPage();
               },
             );
           },
