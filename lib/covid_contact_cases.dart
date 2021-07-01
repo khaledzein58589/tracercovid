@@ -27,6 +27,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => getMethods(context));
+
   }
 
   getMethods(context) async {
@@ -102,6 +103,11 @@ class _CovidContactCasesState extends State<CovidContactCases> {
                     phoneNumber: otherCasePhoneNumber,
                     contactTimes: 1,
                     formattedDates: [getFormattedDate(otherCaseLocationDate.toDate())]));
+
+                FirebaseFirestore.instance.collection("contactcases").doc().set({
+                  "phonenumber": '$otherCasePhoneNumber',
+
+                });
               }
             }
           }
@@ -115,6 +121,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
     /// => end stop loading
     setState(() {
       isLoading = false;
+
     });
   }
 
@@ -126,7 +133,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Covid Contact Cases'),
-        backgroundColor: Colors.black54,
+        backgroundColor: Colors.cyan,
       ),
       body: bodyWidget(),
     );
@@ -181,7 +188,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
             children: [
               Text(
                 'No contact users with this positive case',
-                style: TextStyle(color: Colors.white, fontSize: width / 15),
+                style: TextStyle(color: Colors.cyan, fontSize: width / 15),
                 textAlign: TextAlign.center,
               ),
               Padding(
@@ -233,7 +240,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
                       children: [
                         Text(
                           'Send to All',
-                          style: TextStyle(color: Colors.white, fontSize: width / 25),
+                          style: TextStyle(color: Colors.cyan, fontSize: width / 25),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -272,6 +279,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
                     onTap: () async {
                       String message = "Hello";
                       await _sendSMS(message, [element.phoneNumber]);
+
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),

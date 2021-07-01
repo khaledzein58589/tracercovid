@@ -77,11 +77,18 @@ class _HomePageState extends State<MyHomePage> {
         });
       });
       savedata() async {
-        DateTime now = DateTime.now();
-
         String phone = FirebaseAuth.instance.currentUser.phoneNumber;
         String uid = FirebaseAuth.instance.currentUser.uid;
-        FirebaseFirestore.instance.collection("location").doc().set({"phonenumber":'$phone',"date":'$now',"latitude": '$lat', "longitude": '$lng',"uid":uid});
+
+        FirebaseFirestore.instance.collection("location").doc().set({
+          "phonenumber": '$phone',
+          "uid": uid,
+          "date": Timestamp.fromDate(DateTime.now()),
+          "latitude": lat,
+          "longitude": lng,
+        });
+
+
 
       }
       Future.delayed(const Duration(milliseconds: 15000), () {
@@ -159,9 +166,9 @@ class _HomePageState extends State<MyHomePage> {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        algorithm()));
+                                        GenerateScreen()));
                           },
-                          label: 'Algorithm'),
+                          label: 'Qr Code'),
                     ],
                   ),
                 )

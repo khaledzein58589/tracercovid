@@ -20,9 +20,9 @@ class resultlist extends StatelessWidget {
     return MaterialApp(
       title: 'Monitor Positive Cases',
       theme: ThemeData(
-        appBarTheme: AppBarTheme(color: Colors.red),
+        appBarTheme: AppBarTheme(color: Colors.cyan),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
       ),
       home: HomePage(),
     );

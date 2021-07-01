@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> saveData() async {
     print('woselll');
-    FirebaseFirestore.instance.collection("location").doc().set({
+    FirebaseFirestore.instance.collection("locations").doc().set({
       "phonenumber": '$phone',
       "uid": uid,
       "date": Timestamp.fromDate(DateTime.now()),

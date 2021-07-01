@@ -1,114 +1,151 @@
-import 'dart:math' show acos, atan2, cos, sin, sqrt;
-import 'package:vector_math/vector_math.dart';
 import 'package:flutter/material.dart';
-import 'package:covid_tracer/main.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter/services.dart';
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui';
+import 'dart:io';
+import 'package:flutter/rendering.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'main.dart';
 void main() {
-  runApp(MaterialApp(
-    home: algorithm(),
-
-  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
+  runApp(GenerateScreen());
 }
 
-class algorithm extends StatefulWidget {
+class GenerateScreen extends StatefulWidget {
+
   @override
-  _State createState() => _State();
+  State<StatefulWidget> createState() => GenerateScreenState();
+
 }
 
-class _State extends State<algorithm> {
-  double earthRadius = 3960;
-//Using pLat and pLng as dummy location
-  double pLat = 33.863259;
-  double pLat2 = 33.8632582;
-  String phonenumber;
-  String phone = FirebaseAuth.instance.currentUser.phoneNumber;
-  double pLng = 35.4911421;
-  double pLng2 = 35.4911438;
+class GenerateScreenState extends State<GenerateScreen> {
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Manage PCR',
+  static const double _topSectionTopPadding = 50.0;
+  static const double _topSectionBottomPadding = 20.0;
+  static const double _topSectionHeight = 50.0;
+  dynamic data;
+  GlobalKey globalKey = new GlobalKey();
 
-      home: Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-            title: Text('Get Number From Algorithm'),
-
-            automaticallyImplyLeading: true,
-            //`true` if you want Flutter to automatically add Back Button when needed,
-            //or `false` if you want to force your own back button every where
-            leading: IconButton(icon:Icon(Icons.arrow_back),
-              //onPressed:() => Navigator.pop(context, false),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => MyApp()
-                ));
-
-              },
-            )
-        ),
-
-        body: Center(
-          child: ListView.builder(
-
-              padding: const EdgeInsets.all(30.0),
-              itemBuilder: (context, position) {
-                return Column(
-                  children: <Widget>[
-                    Divider(height:0),
-                    ListTile(
-                      title: Text(phonenumber),
-
-                        leading: Icon(Icons.phone_android)
-
-
-                    ),
-                  ],
-                );
-              }),
-        ),
-
-      ),
-    );
-  }
+  String _dataString='';
 
   @override
   void initState() {
     super.initState();
-    getDistance();
 
   }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('QR Code Contact Cases'),
+          backgroundColor: Colors.cyan,
+          automaticallyImplyLeading: true,
+          leading: IconButton(icon:Icon(Icons.arrow_back),
+            //onPressed:() => Navigator.pop(context, false),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => MyApp()
+              ));
 
+            },
+          )
+      ),
+      body: _contentWidget(),
+    );
+  }
+  CollectionReference _collectionRef =
+  FirebaseFirestore.instance.collection('contactcases');
 
-  getDistance(){
+  Future<void> getData() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await _collectionRef.get();
 
-    var a = cos(radians(pLat)) * cos(radians(pLat2)) *cos(radians(pLng)) * cos(radians(pLng2));
-    var b = cos(radians(pLat)) * sin(radians(pLng)) *cos(radians(pLat2)) * sin(radians(pLng2));
-    var c = sin(radians(pLat)) * sin(radians(pLat2));
-    var d = acos(a+b+c) * earthRadius;
-    var s =d/0.00062137;
-    print(a);
-    print(b);
-    print(c);
-    print(d);
-    print(s); //d is the distance in meters
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
 
-    setState(() {
-      if (s<1) {
-        phonenumber=phone;
-      }
-    });
-
-
+  allData.forEach((element) {
+    _dataString +='\n${element['phonenumber']}';
+    print(_dataString);
+  });
   }
 
+  Future<void> _captureAndSharePng() async {
+    try {
+      RenderRepaintBoundary boundary = globalKey.currentContext.findRenderObject();
+      var image = await boundary.toImage();
+      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData.buffer.asUint8List();
 
+      final tempDir = await getTemporaryDirectory();
+      final file = await new File('${tempDir.path}/image.png').create();
+      await file.writeAsBytes(pngBytes);
+
+      final channel = const MethodChannel('channel:me.camellabs.share/share');
+      channel.invokeMethod('shareFile', 'image.png');
+
+    } catch(e) {
+      print(e.toString());
+    }
+  }
+
+  _contentWidget() {
+    final bodyHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).viewInsets.bottom;
+    return  Container(
+      color: const Color(0xFFFFFFFF),
+      child:  Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(
+              top: _topSectionTopPadding,
+              left: 20.0,
+              right: 10.0,
+              bottom: _topSectionBottomPadding,
+            ),
+            child:  Container(
+              height: _topSectionHeight,
+              child:  Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 250.0),
+                    child:  FlatButton(
+                      child:  Text("REFRESH"),
+                      onPressed: () {
+                        setState((){
+                          getData();
+                          _captureAndSharePng();
+                          _contentWidget();
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+
+          Expanded(
+            child:  Center(
+              child: RepaintBoundary(
+                key: globalKey,
+                child: QrImage(
+                  data: _dataString,
+                  size: 0.5 * bodyHeight,
+
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
-
-
-
-
-
