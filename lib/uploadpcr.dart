@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart';
 import 'package:covid_tracer/main.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,13 +15,12 @@ void main() {
   runApp(UploadingImageToFirebaseStorage());
 }
 
-
-
 final Color green = Colors.blueAccent;
 final Color orange = Colors.blueAccent;
-final phoneController  = FirebaseAuth.instance.currentUser.phoneNumber;
-class UploadingImageToFirebaseStorage extends StatefulWidget {
+final phoneController = FirebaseAuth.instance.currentUser?.phoneNumber;
+final uid = FirebaseAuth.instance.currentUser?.uid;
 
+class UploadingImageToFirebaseStorage extends StatefulWidget {
   @override
   _UploadingImageToFirebaseStorageState createState() =>
       _UploadingImageToFirebaseStorageState();
@@ -30,6 +29,8 @@ class UploadingImageToFirebaseStorage extends StatefulWidget {
 class _UploadingImageToFirebaseStorageState
     extends State<UploadingImageToFirebaseStorage> {
   File _imageFile;
+  String imageUrl;
+  bool isLoading = false;
 
   ///NOTE: Only supported on Android & iOS
   ///Needs image_picker plugin {https://pub.dev/packages/image_picker}
@@ -44,55 +45,76 @@ class _UploadingImageToFirebaseStorageState
   }
 
   Future uploadImageToFirebase(BuildContext context) async {
-    String fileName = basename(_imageFile.path);
-    Reference firebaseStorageRef =
-    FirebaseStorage.instance.ref().child('uploads/$fileName');
-    FirebaseFirestore.instance
-        .collection("pcrsend")
-        .doc()
-        .set({
-      "date": DateTime.now(),
-      "phonenumber":  phoneController,
-      "imagename": fileName,
+    if (_imageFile != null &&
+        _imageFile.path != null &&
+        _imageFile.path != '') {
+      setState(() {
+        isLoading = true;
+      });
 
-    });
-    UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
-    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-    taskSnapshot.ref.getDownloadURL().then(
-          (value) => print("Done: $value"),
-    );
+      String fileName = basename(_imageFile.path);
+      final _firebaseStorage = FirebaseStorage.instance;
+      PickedFile image;
+      String uid = FirebaseAuth.instance.currentUser?.uid;
+      DateTime now = DateTime.now();
+
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('$fileName');
+      var snapshot =
+          await _firebaseStorage.ref().child('$fileName').putFile(_imageFile);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        imageUrl = downloadUrl;
+      });
+
+      UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+      final downloadedUrl = await taskSnapshot.ref.getDownloadURL();
+      print("Done: $downloadedUrl");
+      FirebaseFirestore.instance.collection("pcrsend").add({
+        "date": now,
+        "uid": uid ?? null,
+        "phonenumber": phoneController ?? null,
+        "imagename": fileName,
+        "imageUrl": downloadedUrl,
+      });
+      setState(() {
+        isLoading = false;
+        _imageFile = null;
+        toast();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-          title: Text('Manage PCR'),
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text('Upload Pcr Report Signed'),
           automaticallyImplyLeading: true,
+          backgroundColor: Colors.cyan,
           //`true` if you want Flutter to automatically add Back Button when needed,
           //or `false` if you want to force your own back button every where
-          leading: IconButton(icon:Icon(Icons.arrow_back),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
             //onPressed:() => Navigator.pop(context, false),
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => MyApp()
-              ));
-
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyApp()));
             },
-          )
-      ),
+          )),
       body: Stack(
         children: <Widget>[
           Container(
-            height: 360,
+            height: 350,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(250.0),
                     bottomRight: Radius.circular(10.0)),
                 gradient: LinearGradient(
-                    colors: [green,orange],
+                    colors: [Colors.cyan, Colors.cyan],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight)),
           ),
@@ -103,16 +125,12 @@ class _UploadingImageToFirebaseStorageState
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child: Text(
-                      "Uploading Pcr Test Results",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontStyle: FontStyle.italic),
+                    child: Image.network(
+                      "https://cdn2.iconfinder.com/data/icons/covid-19-60/256/Corona-test-sample-swab-512.png",
+                      height: 200,
                     ),
                   ),
                 ),
-
                 SizedBox(height: 20.0),
                 Expanded(
                   child: Stack(
@@ -126,13 +144,13 @@ class _UploadingImageToFirebaseStorageState
                           child: _imageFile != null
                               ? Image.file(_imageFile)
                               : FlatButton(
-                            child: Icon(
-                              Icons.add_a_photo,
-                              color: Colors.blue,
-                              size: 50,
-                            ),
-                            onPressed: pickImage,
-                          ),
+                                  child: Icon(
+                                    Icons.add_a_photo,
+                                    color: Colors.cyan,
+                                    size: 50,
+                                  ),
+                                  onPressed: pickImage,
+                                ),
                         ),
                       ),
                     ],
@@ -142,6 +160,7 @@ class _UploadingImageToFirebaseStorageState
               ],
             ),
           ),
+          isLoading ? Center(child: CircularProgressIndicator()) : Container(),
         ],
       ),
     );
@@ -153,25 +172,37 @@ class _UploadingImageToFirebaseStorageState
         children: <Widget>[
           Container(
             padding:
-            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
+                const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
             margin: const EdgeInsets.only(
                 top: 30, left: 20.0, right: 20.0, bottom: 20.0),
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [orange, green],
-                ),
+                color: _imageFile != null &&
+                        _imageFile.path != null &&
+                        _imageFile.path != ''
+                    ? Colors.cyan
+                    : Colors.black12,
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(
-              onPressed: () => uploadImageToFirebase(context),
+              onPressed: () {
+                uploadImageToFirebase(context);
+              },
               child: Text(
-                "Upload Image",
-                style: TextStyle(fontSize: 20,color: Colors.white),
+                "Upload Pcr",
+                style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  toast() {
+    Fluttertoast.showToast(
+        msg: "Upload Success",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1);
   }
 }
 /*

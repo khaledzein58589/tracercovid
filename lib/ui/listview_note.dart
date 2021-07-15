@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:covid_tracer/adminmainpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:covid_tracer/service/firebase_firestore_service.dart';
@@ -48,11 +49,13 @@ class _ListViewNoteState extends State<ListViewNote> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Manage PCR',
+
       home: Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
             title: Text('Manage PCR'),
+            backgroundColor: Colors.cyan,
             automaticallyImplyLeading: true,
             //`true` if you want Flutter to automatically add Back Button when needed,
             //or `false` if you want to force your own back button every where
@@ -60,7 +63,7 @@ class _ListViewNoteState extends State<ListViewNote> {
               //onPressed:() => Navigator.pop(context, false),
               onPressed: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => MyApp()
+                    builder: (context) => adminmainpage()
                 ));
 
               },
@@ -87,17 +90,17 @@ class _ListViewNoteState extends State<ListViewNote> {
                       ),
                       subtitle: Text(
                         '${items[position].result}',
-                style: TextStyle(
-                fontSize: 22.0,
-                color: Colors.deepOrangeAccent,
-                ),
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.deepOrangeAccent,
+                        ),
 
                       ),
                       leading: Column(
                         children: <Widget>[
                           Padding(padding: EdgeInsets.all(2.0)),
                           CircleAvatar(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: Colors.cyan,
                             radius: 0.0,
                             child: Text(
                               '${position + 1}',
@@ -143,9 +146,6 @@ class _ListViewNoteState extends State<ListViewNote> {
   }
 
   void _createNewNote(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => NoteScreen(Note(null, '', '','',''))),
-    );
+
   }
 }

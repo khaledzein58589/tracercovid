@@ -1,4 +1,4 @@
-
+import 'package:covid_tracer/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,18 +39,31 @@ class _MyHomePageState1 extends State<MyHomePage1> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+          backgroundColor: Colors.cyan,
+          automaticallyImplyLeading: true,
+          //`true` if you want Flutter to automatically add Back Button when needed,
+          //or `false` if you want to force your own back button every where
+          leading: IconButton(icon:Icon(Icons.arrow_back),
+            //onPressed:() => Navigator.pop(context, false),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => MyApp()
+              ));
+
+            },
+          )
       ),
       body: Center(
           child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("Please Register Here ",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          fontSize: 30,
-                          fontFamily: 'Roboto',
-                          fontStyle: FontStyle.italic)),
+                  Text("Registration",
+                    style: TextStyle(
+                      color: Colors.cyan,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    ),),
                   RegisterPet(),
                 ]),
           )),

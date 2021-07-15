@@ -1,9 +1,8 @@
-import 'package:covid_tracer/ui/listview_note.dart';
 import 'package:flutter/material.dart';
 import 'package:covid_tracer/registration.dart';
 import 'package:covid_tracer/uploadpcr.dart';
-import 'package:covid_tracer/publishpcr.dart';
-import 'package:covid_tracer/monitorpositive.dart';
+import 'package:covid_tracer/geopoint.dart';
+import 'package:covid_tracer/loginpage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -77,7 +76,31 @@ class _RegisterPetState extends State<RegisterPet> {
         child: SingleChildScrollView(
             child: Column(children: <Widget>[
 
+              Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      ElevatedButton(
 
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                              builder: (context) => loginpage()
+                          ));
+
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
+                          onPrimary: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(32.0),
+                          ),
+                        ),
+                        child: Text('---Administration---'),
+                      ),
+
+                    ],
+                  )),
 
 
               Padding(
@@ -129,6 +152,9 @@ class _RegisterPetState extends State<RegisterPet> {
 
                     ],
                   )),
+
+
+
               Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Row(
@@ -137,7 +163,7 @@ class _RegisterPetState extends State<RegisterPet> {
                       ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => publishpcr()
+                              builder: (context) => geopoint()
                           ));
 
                         },
@@ -148,60 +174,11 @@ class _RegisterPetState extends State<RegisterPet> {
                             borderRadius: BorderRadius.circular(32.0),
                           ),
                         ),
-                        child: Text('Publish Pcr Test'),
+                        child: Text('Geo Point Location'),
                       ),
 
                     ],
                   )),
-              Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => ListViewNote()
-                          ));
-
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                          onPrimary: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32.0),
-                          ),
-                        ),
-                        child: Text('Publish pcr result'),
-                      ),
-
-                    ],
-                  )),
-              Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => resultlist()
-                          ));
-
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                          onPrimary: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32.0),
-                          ),
-                        ),
-                        child: Text('Monitor Positive Case'),
-                      ),
-
-                    ],
-                  )),
-
             ])));
   }
 
