@@ -12,7 +12,7 @@ class CovidContactUserDates extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Covid Contact Cases'),
-        backgroundColor: Colors.black54,
+        backgroundColor: Colors.cyan,
       ),
       body: bodyWidget(),
     );
@@ -24,7 +24,7 @@ class CovidContactUserDates extends StatelessWidget {
         children: model.formattedDates.map((e) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
           child: ListTile(
-            tileColor: Colors.white10,
+            tileColor: Colors.redAccent,
             title: Text(
                 '$e'
             ),
