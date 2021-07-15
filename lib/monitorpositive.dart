@@ -20,9 +20,9 @@ class resultlist extends StatelessWidget {
     return MaterialApp(
       title: 'Monitor Positive Cases',
       theme: ThemeData(
-        appBarTheme: AppBarTheme(color: Colors.red),
+        appBarTheme: AppBarTheme(color: Colors.cyan),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
       ),
       home: HomePage(),
     );
@@ -62,16 +62,16 @@ class HomePage extends StatelessWidget {
             onTap: () =>
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => CovidContactCases(
-                          phoneNumber: documentSnapshot.data()['phonenumber'],
-                        ))),
+                      phoneNumber: documentSnapshot.data()['phonenumber'],
+                    ))),
           ),
           // orderBy is compulsory to enable pagination
           query: FirebaseFirestore.instance
               .collection('pcrpublish')
               .where("result", isEqualTo: true)
               .where("date",
-                  isGreaterThanOrEqualTo: Timestamp.fromDate(
-                      DateTime.now().subtract(Duration(days: covidCasesPreviousDates))))
+              isGreaterThanOrEqualTo: Timestamp.fromDate(
+                  DateTime.now().subtract(Duration(days: covidCasesPreviousDates))))
               .orderBy('date', descending: true),
           // to fetch real-time data
           isLive: true,

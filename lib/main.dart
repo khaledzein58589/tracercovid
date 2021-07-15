@@ -1,4 +1,4 @@
-import 'package:covid_tracer/publishpcr.dart';
+ import 'package:covid_tracer/publishpcr.dart';
 import 'package:covid_tracer/service/global_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

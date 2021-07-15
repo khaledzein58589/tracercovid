@@ -71,12 +71,7 @@ class _MyHomePageState1 extends State<MyHomePage1> {
               },
               label: 'Publish Pcr Test'),
 
-          GetOptionWidget(
-              onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => ListViewNote()));
-              },
-              label: 'Publish pcr result'),
+
 
           GetOptionWidget(
               onPressed: () {

@@ -159,9 +159,9 @@ class _HomePageState extends State<MyHomePage> {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        algorithm()));
+                                        GenerateScreen()));
                           },
-                          label: 'Algorithm'),
+                          label: 'Qr Code'),
                     ],
                   ),
                 )

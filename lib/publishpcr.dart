@@ -20,7 +20,7 @@ class publishpcr extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage1(title: 'PCR Results '),
+      home: MyHomePage1(title: 'Publish Pcr Online'),
     );
   }
 }
@@ -40,7 +40,7 @@ class _MyHomePageState1 extends State<MyHomePage1> {
       appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
-          title: Text('Manage PCR'),
+          title: Text('Publish Pcr Online'),
           automaticallyImplyLeading: true,
           //`true` if you want Flutter to automatically add Back Button when needed,
           //or `false` if you want to force your own back button every where
@@ -57,12 +57,15 @@ class _MyHomePageState1 extends State<MyHomePage1> {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text("PCR Results  ",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w200,
-                      fontSize: 30,
-                      fontFamily: 'Roboto',
-                      fontStyle: FontStyle.italic)),
+              Text(
+                "Publish Pcr Online",
+
+                style: TextStyle(
+                  color: Colors.cyan,
+                  fontSize: 22,
+
+                ),
+              ),
               RegisterPet(),
             ]),
       )),

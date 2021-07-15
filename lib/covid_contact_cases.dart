@@ -27,6 +27,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => getMethods(context));
+
   }
 
   getMethods(context) async {
@@ -37,8 +38,8 @@ class _CovidContactCasesState extends State<CovidContactCases> {
         .collection('location')
         .where("phonenumber", isEqualTo: widget.phoneNumber)
         .where("date",
-            isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime.now()
-                .subtract(Duration(days: covidContactCasesFromPreviousDates))))
+        isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime.now()
+            .subtract(Duration(days: covidContactCasesFromPreviousDates))))
         .orderBy('date', descending: true)
         .get();
 
@@ -46,8 +47,8 @@ class _CovidContactCasesState extends State<CovidContactCases> {
     final allLocationsFromThePreviousDates = await FirebaseFirestore.instance
         .collection('location')
         .where("date",
-            isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime.now()
-                .subtract(Duration(days: covidContactCasesFromPreviousDates))))
+        isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime.now()
+            .subtract(Duration(days: covidContactCasesFromPreviousDates))))
         .orderBy('date', descending: true)
         .get();
 
@@ -60,7 +61,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
       final positiveCaseLatitude = positiveCaseElement.data()['latitude'];
       final positiveCaseLongitude = positiveCaseElement.data()['longitude'];
       final positiveCaseLocationDate =
-          positiveCaseElement.data()['date'] as Timestamp;
+      positiveCaseElement.data()['date'] as Timestamp;
 
       /// 4. loop on all locations to make condition on each location with this phone number location
       allLocationsFromThePreviousDates.docs.forEach((otherElement) {
@@ -72,9 +73,9 @@ class _CovidContactCasesState extends State<CovidContactCases> {
         /// 5. make condition that the positiveCaseElement is other than the otherElement phone number
         if (positiveCasePhoneNumber != otherCasePhoneNumber &&
             positiveCaseLocationDate
-                    .toDate()
-                    .difference(otherCaseLocationDate.toDate())
-                    .inMinutes <
+                .toDate()
+                .difference(otherCaseLocationDate.toDate())
+                .inMinutes <
                 differenceInMinutesBetweenTwoUsers) {
           /// 6. get the distance between the phone number location and this other location
           if (positiveCaseLatitude != null &&
@@ -88,7 +89,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
                 otherCaseLongitude);
             if (distanceInMeters < differenceInMetersBetweenTwoUsers) {
               final contactedUser = contactUsersList.firstWhere(
-                  (element) => element.phoneNumber == otherCasePhoneNumber,
+                      (element) => element.phoneNumber == otherCasePhoneNumber,
                   orElse: () => null);
               if (contactedUser != null) {
                 if (!contactedUser.formattedDates
@@ -102,6 +103,11 @@ class _CovidContactCasesState extends State<CovidContactCases> {
                     phoneNumber: otherCasePhoneNumber,
                     contactTimes: 1,
                     formattedDates: [getFormattedDate(otherCaseLocationDate.toDate())]));
+
+                FirebaseFirestore.instance.collection("contactcases").doc().set({
+                  "phonenumber": '$otherCasePhoneNumber',
+
+                });
               }
             }
           }
@@ -115,6 +121,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
     /// => end stop loading
     setState(() {
       isLoading = false;
+
     });
   }
 
@@ -126,7 +133,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Covid Contact Cases'),
-        backgroundColor: Colors.black54,
+        backgroundColor: Colors.cyan,
       ),
       body: bodyWidget(),
     );
@@ -141,30 +148,30 @@ class _CovidContactCasesState extends State<CovidContactCases> {
           /// loading widget
           isLoading
               ? Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1,
-                  ),
-                )
+            child: CircularProgressIndicator(
+              strokeWidth: 1,
+            ),
+          )
               :
 
-              /// list of contact cases result
-              Row(
+          /// list of contact cases result
+          Row(
+            mainAxisAlignment: contactUsersList.isEmpty
+                ? MainAxisAlignment.center
+                : MainAxisAlignment.start,
+            children: [
+              Container(
+                width: width,
+                height: height,
+                child: Column(
                   mainAxisAlignment: contactUsersList.isEmpty
                       ? MainAxisAlignment.center
                       : MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: width,
-                      height: height,
-                      child: Column(
-                        mainAxisAlignment: contactUsersList.isEmpty
-                            ? MainAxisAlignment.center
-                            : MainAxisAlignment.start,
-                        children: contactCasesListWidgets(),
-                      ),
-                    ),
-                  ],
+                  children: contactCasesListWidgets(),
                 ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -181,7 +188,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
             children: [
               Text(
                 'No contact users with this positive case',
-                style: TextStyle(color: Colors.white, fontSize: width / 15),
+                style: TextStyle(color: Colors.cyan, fontSize: width / 15),
                 textAlign: TextAlign.center,
               ),
               Padding(
@@ -223,8 +230,8 @@ class _CovidContactCasesState extends State<CovidContactCases> {
                 child: Container(
                   width: width/2,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.white10
+                      borderRadius: BorderRadius.circular(30),
+                      color: Colors.white10
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
@@ -233,7 +240,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
                       children: [
                         Text(
                           'Send to All',
-                          style: TextStyle(color: Colors.white, fontSize: width / 25),
+                          style: TextStyle(color: Colors.cyan, fontSize: width / 25),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -259,9 +266,9 @@ class _CovidContactCasesState extends State<CovidContactCases> {
             tileColor: Colors.red[colorLevel * 100],
             leading: CircleAvatar(
                 child: Text(
-              '${element.contactTimes}',
-              style: TextStyle(color: Colors.white, fontSize: width / 15),
-            )),
+                  '${element.contactTimes}',
+                  style: TextStyle(color: Colors.white, fontSize: width / 15),
+                )),
             title: Text('${element.phoneNumber}'),
             trailing: Container(
               width: width/4,
@@ -272,6 +279,7 @@ class _CovidContactCasesState extends State<CovidContactCases> {
                     onTap: () async {
                       String message = "Hello";
                       await _sendSMS(message, [element.phoneNumber]);
+
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
